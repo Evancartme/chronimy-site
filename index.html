@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Chronimy | Aurora Dawn</title>
   <link href="https://rsms.me/inter/inter.css" rel="stylesheet">
+  <script src="https://embed.thirdweb.com/connect"></script>
   <style>
     @import url('https://rsms.me/inter/inter.css');
     * { margin:0; padding:0; box-sizing:border-box; }
@@ -16,7 +17,7 @@
     .hero { text-align: center; padding: 6rem 1rem; background: #E6F4F5 !important; }
     .hero h1 { font-size: 2.8rem; color: #1A1A1A !important; margin-bottom: 1rem; }
     .hero p { color: #666 !important; margin-bottom: 2.5rem !important; }
-    .cta-btn { background: #009B9E !important; color: white !important; padding: 0.8rem 2rem; border: none; border-radius: 6px; text-decoration: none; font-weight: 600; display: inline-block; }
+    .cta-btn { background: #009B9E !important; color: white !important; padding: 0.8rem 2rem; border: none; border-radius: 6px; text-decoration: none; font-weight: 600; display: inline-block; cursor: pointer; }
     .cta-btn:hover { box-shadow: 0 0 0 2px #D7B256; }
     .packs { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin: 3rem 0; }
     .pack { background: white !important; border: 1px solid #E5E5E5; border-radius: 12px; padding: 2rem; text-align: center; }
@@ -24,9 +25,10 @@
     .pack h3 { color: #009B9E !important; margin-bottom: 0.5rem; }
     .pack .price { font-size: 2rem; font-weight: 700; color: #1A1A1A !important; }
     .pack .credits { color: #D7B256 !important; font-weight: 600; }
-    .pack-btn { background: #009B9E !important; color: white !important; width: 100%; padding: 0.8rem; border-radius: 6px; font-weight: 600; }
+    .pack-btn { background: #009B9E !important; color: white !important; width: 100%; padding: 0.8rem; border-radius: 6px; font-weight: 600; cursor: pointer; }
     .footer { background: #F8F8F8 !important; padding: 3rem 0 2rem; text-align: center; font-size: 0.9rem; color: #666 !important; }
     .footer a { color: #009B9E !important; }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
@@ -38,7 +40,6 @@
         <a href="#" onclick="show('whitepaper')">Whitepaper</a>
         <a href="#" onclick="show('contribute')">Contribute</a>
         <a href="#" onclick="show('connect')">Connect</a>
-        <a href="#" onclick="show('thankyou')">Thank You</a>
         <a href="#" onclick="show('about')">About</a>
         <a href="#" onclick="show('roadmap')">Roadmap</a>
         <a href="#" onclick="show('affiliates')">Affiliates</a>
@@ -60,7 +61,7 @@
     </section>
 
     <!-- 2. Contribute -->
-    <section id="contribute" style="display: none; padding: 4rem 0;">
+    <section id="contribute" class="hidden" style="padding: 4rem 0;">
       <div class="container">
         <h1 style="text-align: center; margin-bottom: 1rem;">Support Chronimy</h1>
         <p style="text-align: center; max-width: 800px; margin: 0 auto 2.5rem; color: #666;">
@@ -71,32 +72,32 @@
             <h3>Pioneer</h3>
             <p class="price">$100</p>
             <p class="credits">10,000 Credits</p>
-            <button class="pack-btn">Contribute $100</button>
+            <button class="pack-btn" onclick="contribute(100, 10000, 'Pioneer')">Contribute $100</button>
           </div>
           <div class="pack">
             <h3>Guardian</h3>
             <p class="price">$500</p>
             <p class="credits">50,000 Credits</p>
-            <button class="pack-btn">Contribute $500</button>
+            <button class="pack-btn" onclick="contribute(500, 50000, 'Guardian')">Contribute $500</button>
           </div>
           <div class="pack">
             <h3>Vanguard</h3>
             <p class="price">$1,000</p>
             <p class="credits">100,000 Credits</p>
-            <button class="pack-btn">Contribute $1,000</button>
+            <button class="pack-btn" onclick="contribute(1000, 100000, 'Vanguard')">Contribute $1,000</button>
           </div>
           <div class="pack gold">
             <h3>Founders Circle</h3>
             <p class="price">$5,000</p>
             <p class="credits">500,000 Credits</p>
-            <button class="pack-btn">Contribute $5,000</button>
+            <button class="pack-btn" onclick="contribute(5000, 500000, 'Founders Circle')">Contribute $5,000</button>
           </div>
         </div>
       </div>
     </section>
 
     <!-- 3. Whitepaper -->
-    <section id="whitepaper" style="display: none; padding: 4rem 0;">
+    <section id="whitepaper" class="hidden" style="padding: 4rem 0;">
       <div class="container">
         <h1>Whitepaper</h1>
         <p>November 13, 2025</p>
@@ -105,27 +106,27 @@
     </section>
 
     <!-- 4. Connect -->
-    <section id="connect" style="display: none; padding: 4rem 0;">
+    <section id="connect" class="hidden" style="padding: 4rem 0;">
       <div class="container">
         <h1>Connect Wallet</h1>
         <p>Connect your wallet to access your credits and governance.</p>
-        <button class="cta-btn">Connect with Thirdweb</button>
+        <button class="cta-btn" onclick="connectWallet()">Connect with Thirdweb</button>
+        <p id="wallet-status" style="margin-top: 1rem;"></p>
       </div>
     </section>
 
     <!-- 5. Thank You -->
-    <section id="thankyou" style="display: none; padding: 4rem 0;">
+    <section id="thankyou" class="hidden" style="padding: 4rem 0;">
       <div class="container">
         <h1>Thank You</h1>
-        <p>Your contribution is confirmed.</p>
-        <p>Credits: 10,000 | Tier: Pioneer</p>
-        <p>Transaction ID: 0xabc...123</p>
+        <p id="thank-you-message"></p>
         <p>Treasury Split: 30% → Affiliate | 20% → Marketing | 50% → Dev Multisig</p>
+        <a href="#" onclick="show('home')" class="cta-btn">Back to Home</a>
       </div>
     </section>
 
     <!-- 6. About -->
-    <section id="about" style="display: none; padding: 4rem 0;">
+    <section id="about" class="hidden" style="padding: 4rem 0;">
       <div class="container">
         <h1>About Chronimy</h1>
         <p>We are building Independent Trust Architecture — a protocol for verifiable, decentralized trust.</p>
@@ -135,7 +136,7 @@
     </section>
 
     <!-- 7. Roadmap -->
-    <section id="roadmap" style="display: none; padding: 4rem 0;">
+    <section id="roadmap" class="hidden" style="padding: 4rem 0;">
       <div class="container">
         <h1>Roadmap</h1>
         <p>Q4 2025 — Aurora Dawn: Pre-funding · Credits · Compliance</p>
@@ -145,17 +146,18 @@
     </section>
 
     <!-- 8. Affiliates -->
-    <section id="affiliates" style="display: none; padding: 4rem 0;">
+    <section id="affiliates" class="hidden" style="padding: 4rem 0;">
       <div class="container">
         <h1>Affiliate Program</h1>
         <p>Earn 30% of every contribution.</p>
-        <p>Your Link: https://chronimy-site.vercel.app/?ref=0xYourWallet</p>
-        <p>How It Works: Share → User contributes → 30% auto to your wallet</p>
+        <p>Your Wallet: <input type="text" id="affiliate-wallet" placeholder="0x..." style="padding: 0.5rem; width: 300px;"></p>
+        <button class="cta-btn" onclick="generateAffiliateLink()">Generate My Link</button>
+        <p id="affiliate-link" style="margin-top: 1rem; word-break: break-all;"></p>
       </div>
     </section>
 
     <!-- 9. Terms -->
-    <section id="terms" style="display: none; padding: 4rem 0;">
+    <section id="terms" class="hidden" style="padding: 4rem 0;">
       <div class="container">
         <h1>Terms of Service</h1>
         <p>All contributions are donations. No financial return expected. Credits are utility-only. No securities offered.</p>
@@ -163,7 +165,7 @@
     </section>
 
     <!-- 10. Privacy -->
-    <section id="privacy" style="display: none; padding: 4rem 0;">
+    <section id="privacy" class="hidden" style="padding: 4rem 0;">
       <div class="container">
         <h1>Privacy Policy</h1>
         <p>We collect: Wallet address, contribution amount, IP (anonymized). We do not sell data. GDPR compliant.</p>
@@ -171,7 +173,7 @@
     </section>
 
     <!-- 11. Risk -->
-    <section id="risk" style="display: none; padding: 4rem 0;">
+    <section id="risk" class="hidden" style="padding: 4rem 0;">
       <div class="container">
         <h1>Risk Disclosure</h1>
         <p>This is pre-funding. No tokens. No guarantees. You may lose 100% of your contribution.</p>
@@ -187,10 +189,39 @@
   </footer>
 
   <script>
+    // Show page
     function show(id) {
-      document.querySelectorAll('#content > section').forEach(s => s.style.display = 'none');
-      document.getElementById(id).style.display = 'block';
+      document.querySelectorAll('#content > section').forEach(s => s.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
     }
+
+    // Contribute
+    function contribute(amount, credits, tier) {
+      const msg = `You contributed $${amount} and received ${credits} Credits (${tier} tier).`;
+      document.getElementById('thank-you-message').innerText = msg;
+      show('thankyou');
+    }
+
+    // Wallet Connect
+    async function connectWallet() {
+      try {
+        const { connect } = window.thirdweb;
+        const wallet = await connect();
+        document.getElementById('wallet-status').innerText = `Connected: ${wallet.address.slice(0, 6)}...${wallet.address.slice(-4)}`;
+      } catch (e) {
+        document.getElementById('wallet-status').innerText = "Connection failed.";
+      }
+    }
+
+    // Affiliate Link
+    function generateAffiliateLink() {
+      const wallet = document.getElementById('affiliate-wallet').value;
+      if (!wallet) return alert("Enter your wallet address");
+      const link = `https://chronimy-site.vercel.app/?ref=${wallet}`;
+      document.getElementById('affiliate-link').innerText = link;
+    }
+
+    // Start on Home
     show('home');
   </script>
 </body>
