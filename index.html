@@ -10,12 +10,12 @@
     * { margin:0; padding:0; box-sizing:border-box; }
     body { background: #FDFDFD !important; color: #1A1A1A !important; font-family: 'Inter', sans-serif; line-height: 1.6; font-size: 16px; }
     .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
-    .navbar { background: #FDFDFD !important; border-bottom: 1px solid #E5E5E5; padding: 1rem 0; position: sticky; top:0; }
+    .navbar { background: #FDFDFD !important; border-bottom: 1px solid #E5E5E5; padding: 1rem 0; position: sticky; top:0; z-index:1000; }
     .nav-logo { color: #009B9E !important; font-weight: 600; font-size: 1.5rem; text-decoration: none; }
     .nav-links { display: flex; gap: 2rem; } .nav-links a { color: #666 !important; text-decoration: none; } .nav-links a:hover { color: #009B9E !important; }
     .hero { text-align: center; padding: 6rem 1rem; background: #E6F4F5 !important; }
     .hero h1 { font-size: 2.8rem; color: #1A1A1A !important; margin-bottom: 1rem; }
-    .hero p { color: #666 !important; margin-bottom: 2.5rem !important; } /* increased bottom margin */
+    .hero p { color: #666 !important; margin-bottom: 2.5rem !important; }
     .cta-btn { background: #009B9E !important; color: white !important; padding: 0.8rem 2rem; border: none; border-radius: 6px; text-decoration: none; font-weight: 600; display: inline-block; }
     .cta-btn:hover { box-shadow: 0 0 0 2px #D7B256; }
     .packs { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin: 3rem 0; }
@@ -37,11 +37,20 @@
         <a href="#" onclick="show('home')">Home</a>
         <a href="#" onclick="show('whitepaper')">Whitepaper</a>
         <a href="#" onclick="show('contribute')">Contribute</a>
+        <a href="#" onclick="show('connect')">Connect</a>
+        <a href="#" onclick="show('thankyou')">Thank You</a>
+        <a href="#" onclick="show('about')">About</a>
+        <a href="#" onclick="show('roadmap')">Roadmap</a>
+        <a href="#" onclick="show('affiliates')">Affiliates</a>
+        <a href="#" onclick="show('terms')">Terms</a>
+        <a href="#" onclick="show('privacy')">Privacy</a>
+        <a href="#" onclick="show('risk')">Risk</a>
       </div>
     </div>
   </nav>
 
   <div id="content">
+    <!-- 1. Home -->
     <section id="home" class="hero">
       <div class="container">
         <h1>Trust is not a promise.<br>It is a protocol forged for all.</h1>
@@ -50,6 +59,7 @@
       </div>
     </section>
 
+    <!-- 2. Contribute -->
     <section id="contribute" style="display: none; padding: 4rem 0;">
       <div class="container">
         <h1 style="text-align: center; margin-bottom: 1rem;">Support Chronimy</h1>
@@ -85,11 +95,86 @@
       </div>
     </section>
 
+    <!-- 3. Whitepaper -->
     <section id="whitepaper" style="display: none; padding: 4rem 0;">
       <div class="container">
         <h1>Whitepaper</h1>
         <p>November 13, 2025</p>
         <iframe src="whitepaper.pdf" style="width:100%; height:100vh; border:none;"></iframe>
+      </div>
+    </section>
+
+    <!-- 4. Connect -->
+    <section id="connect" style="display: none; padding: 4rem 0;">
+      <div class="container">
+        <h1>Connect Wallet</h1>
+        <p>Connect your wallet to access your credits and governance.</p>
+        <button class="cta-btn">Connect with Thirdweb</button>
+      </div>
+    </section>
+
+    <!-- 5. Thank You -->
+    <section id="thankyou" style="display: none; padding: 4rem 0;">
+      <div class="container">
+        <h1>Thank You</h1>
+        <p>Your contribution is confirmed.</p>
+        <p>Credits: 10,000 | Tier: Pioneer</p>
+        <p>Transaction ID: 0xabc...123</p>
+        <p>Treasury Split: 30% → Affiliate | 20% → Marketing | 50% → Dev Multisig</p>
+      </div>
+    </section>
+
+    <!-- 6. About -->
+    <section id="about" style="display: none; padding: 4rem 0;">
+      <div class="container">
+        <h1>About Chronimy</h1>
+        <p>We are building Independent Trust Architecture — a protocol for verifiable, decentralized trust.</p>
+        <p>No tokens. No promises. Only utility.</p>
+        <p>Team: Dr. Elena Voss (Compliance), Kai Ren (UX), NeoTrust Dev, Fundraising Lead.</p>
+      </div>
+    </section>
+
+    <!-- 7. Roadmap -->
+    <section id="roadmap" style="display: none; padding: 4rem 0;">
+      <div class="container">
+        <h1>Roadmap</h1>
+        <p>Q4 2025 — Aurora Dawn: Pre-funding · Credits · Compliance</p>
+        <p>Q1 2026 — Nebula: KYC · Governance · Multi-sig</p>
+        <p>Q2 2026 — Pulsar: Full DAO · On-chain voting · Global</p>
+      </div>
+    </section>
+
+    <!-- 8. Affiliates -->
+    <section id="affiliates" style="display: none; padding: 4rem 0;">
+      <div class="container">
+        <h1>Affiliate Program</h1>
+        <p>Earn 30% of every contribution.</p>
+        <p>Your Link: https://chronimy-site.vercel.app/?ref=0xYourWallet</p>
+        <p>How It Works: Share → User contributes → 30% auto to your wallet</p>
+      </div>
+    </section>
+
+    <!-- 9. Terms -->
+    <section id="terms" style="display: none; padding: 4rem 0;">
+      <div class="container">
+        <h1>Terms of Service</h1>
+        <p>All contributions are donations. No financial return expected. Credits are utility-only. No securities offered.</p>
+      </div>
+    </section>
+
+    <!-- 10. Privacy -->
+    <section id="privacy" style="display: none; padding: 4rem 0;">
+      <div class="container">
+        <h1>Privacy Policy</h1>
+        <p>We collect: Wallet address, contribution amount, IP (anonymized). We do not sell data. GDPR compliant.</p>
+      </div>
+    </section>
+
+    <!-- 11. Risk -->
+    <section id="risk" style="display: none; padding: 4rem 0;">
+      <div class="container">
+        <h1>Risk Disclosure</h1>
+        <p>This is pre-funding. No tokens. No guarantees. You may lose 100% of your contribution.</p>
       </div>
     </section>
   </div>
