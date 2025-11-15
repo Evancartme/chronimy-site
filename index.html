@@ -6,6 +6,8 @@
   <title>Chronimy | Aurora Dawn</title>
   <link href="https://rsms.me/inter/inter.css" rel="stylesheet">
   <script src="https://embed.thirdweb.com/connect"></script>
+  <script src="https://embed.thirdweb.com/pay"></script>
+  <script src="https://js.sumsub.com/sdk.js"></script>
   <style>
     @import url('https://rsms.me/inter/inter.css');
     * { margin:0; padding:0; box-sizing:border-box; }
@@ -29,6 +31,7 @@
     .footer { background: #F8F8F8 !important; padding: 3rem 0 2rem; text-align: center; font-size: 0.9rem; color: #666 !important; }
     .footer a { color: #009B9E !important; }
     .hidden { display: none; }
+    .member-area { margin-top: 1rem; }
   </style>
 </head>
 <body>
@@ -72,25 +75,25 @@
             <h3>Pioneer</h3>
             <p class="price">$100</p>
             <p class="credits">10,000 Credits</p>
-            <button class="pack-btn" onclick="contribute(100, 10000, 'Pioneer')">Contribute $100</button>
+            <button class="pack-btn" onclick="startContribution(100, 10000, 'Pioneer')">Contribute $100</button>
           </div>
           <div class="pack">
             <h3>Guardian</h3>
             <p class="price">$500</p>
             <p class="credits">50,000 Credits</p>
-            <button class="pack-btn" onclick="contribute(500, 50000, 'Guardian')">Contribute $500</button>
+            <button class="pack-btn" onclick="startContribution(500, 50000, 'Guardian')">Contribute $500</button>
           </div>
           <div class="pack">
             <h3>Vanguard</h3>
             <p class="price">$1,000</p>
             <p class="credits">100,000 Credits</p>
-            <button class="pack-btn" onclick="contribute(1000, 100000, 'Vanguard')">Contribute $1,000</button>
+            <button class="pack-btn" onclick="startContribution(1000, 100000, 'Vanguard')">Contribute $1,000</button>
           </div>
           <div class="pack gold">
             <h3>Founders Circle</h3>
             <p class="price">$5,000</p>
             <p class="credits">500,000 Credits</p>
-            <button class="pack-btn" onclick="contribute(5000, 500000, 'Founders Circle')">Contribute $5,000</button>
+            <button class="pack-btn" onclick="startContribution(5000, 500000, 'Founders Circle')">Contribute $5,000</button>
           </div>
         </div>
       </div>
@@ -115,7 +118,17 @@
       </div>
     </section>
 
-    <!-- 5. Thank You -->
+    <!-- 5. KYC -->
+    <section id="kyc" class="hidden" style="padding: 4rem 0;">
+      <div class="container">
+        <h1>KYC Verification</h1>
+        <p>For Guardian+ packs, complete KYC via Sumsub.</p>
+        <button class="cta-btn" onclick="startKYC()">Start KYC</button>
+        <div id="kyc-status" style="margin-top: 1rem;"></div>
+      </div>
+    </section>
+
+    <!-- 6. Thank You -->
     <section id="thankyou" class="hidden" style="padding: 4rem 0;">
       <div class="container">
         <h1>Thank You</h1>
@@ -125,7 +138,7 @@
       </div>
     </section>
 
-    <!-- 6. About -->
+    <!-- 7. About -->
     <section id="about" class="hidden" style="padding: 4rem 0;">
       <div class="container">
         <h1>About Chronimy</h1>
@@ -135,7 +148,7 @@
       </div>
     </section>
 
-    <!-- 7. Roadmap -->
+    <!-- 8. Roadmap -->
     <section id="roadmap" class="hidden" style="padding: 4rem 0;">
       <div class="container">
         <h1>Roadmap</h1>
@@ -145,7 +158,7 @@
       </div>
     </section>
 
-    <!-- 8. Affiliates -->
+    <!-- 9. Affiliates -->
     <section id="affiliates" class="hidden" style="padding: 4rem 0;">
       <div class="container">
         <h1>Affiliate Program</h1>
@@ -156,7 +169,7 @@
       </div>
     </section>
 
-    <!-- 9. Terms -->
+    <!-- 10. Terms -->
     <section id="terms" class="hidden" style="padding: 4rem 0;">
       <div class="container">
         <h1>Terms of Service</h1>
@@ -164,7 +177,7 @@
       </div>
     </section>
 
-    <!-- 10. Privacy -->
+    <!-- 11. Privacy -->
     <section id="privacy" class="hidden" style="padding: 4rem 0;">
       <div class="container">
         <h1>Privacy Policy</h1>
@@ -172,7 +185,7 @@
       </div>
     </section>
 
-    <!-- 11. Risk -->
+    <!-- 12. Risk -->
     <section id="risk" class="hidden" style="padding: 4rem 0;">
       <div class="container">
         <h1>Risk Disclosure</h1>
@@ -195,25 +208,69 @@
       document.getElementById(id).classList.remove('hidden');
     }
 
-    // Contribute
-    function contribute(amount, credits, tier) {
-      const msg = `You contributed $${amount} and received ${credits} Credits (${tier} tier).`;
-      document.getElementById('thank-you-message').innerText = msg;
-      show('thankyou');
+    // Start Contribution Flow
+    let currentPack = {};
+    function startContribution(amount, credits, tier) {
+      currentPack = { amount, credits, tier };
+      show('connect');
     }
 
-    // Wallet Connect
+    // Connect Wallet
     async function connectWallet() {
       try {
         const { connect } = window.thirdweb;
         const wallet = await connect();
         document.getElementById('wallet-status').innerText = `Connected: ${wallet.address.slice(0, 6)}...${wallet.address.slice(-4)}`;
+        if (currentPack.amount >= 500) {
+          show('kyc');
+        } else {
+          pay();
+        }
       } catch (e) {
         document.getElementById('wallet-status').innerText = "Connection failed.";
       }
     }
 
-    // Affiliate Link
+    // KYC
+    function startKYC() {
+      SumSub.init({
+        accessToken: 'your-sumsub-token',
+        flowName: 'kyc-flow',
+        onFinish: (result) => {
+          if (result.status === 'completed') {
+            pay();
+          } else {
+            alert('KYC failed. Try again.');
+          }
+        }
+      });
+    }
+
+    // Pay
+    async function pay() {
+      try {
+        const { pay } = window.thirdweb;
+        const ref = new URLSearchParams(window.location.search).get('ref') || 'no-affiliate';
+        const tx = await pay({
+          amount: currentPack.amount,
+          currency: 'USDC',
+          chain: 'polygon',
+          to: '0xTempMultisig...',
+          splits: [
+            { recipient: ref, percentage: 30 },
+            { recipient: '0xMarketing...', percentage: 20 },
+            { recipient: '0xTempMultisig...', percentage: 50 }
+          ]
+        });
+        const msg = `You contributed $${currentPack.amount} and received ${currentPack.credits} Credits (${currentPack.tier} tier). Tx ID: ${tx.hash}`;
+        document.getElementById('thank-you-message').innerText = msg;
+        show('thankyou');
+      } catch (e) {
+        alert('Payment failed. Try again.');
+      }
+    }
+
+    // Affiliate Link Generator
     function generateAffiliateLink() {
       const wallet = document.getElementById('affiliate-wallet').value;
       if (!wallet) return alert("Enter your wallet address");
