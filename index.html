@@ -6,8 +6,6 @@
   <title>Chronimy | Aurora Dawn</title>
   <link href="https://rsms.me/inter/inter.css" rel="stylesheet">
   <script src="https://embed.thirdweb.com/connect"></script>
-  <script src="https://embed.thirdweb.com/pay"></script>
-  <script src="https://js.sumsub.com/sdk.js"></script>
   <style>
     @import url('https://rsms.me/inter/inter.css');
     * { margin:0; padding:0; box-sizing:border-box; }
@@ -21,6 +19,7 @@
     .hero p { color: #666 !important; margin-bottom: 2.5rem !important; }
     .cta-btn { background: #009B9E !important; color: white !important; padding: 0.8rem 2rem; border: none; border-radius: 6px; text-decoration: none; font-weight: 600; display: inline-block; cursor: pointer; }
     .cta-btn:hover { box-shadow: 0 0 0 2px #D7B256; }
+    .cta-btn:disabled { background: #ccc !important; cursor: not-allowed; }
     .packs { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin: 3rem 0; }
     .pack { background: white !important; border: 1px solid #E5E5E5; border-radius: 12px; padding: 2rem; text-align: center; }
     .pack.gold { border-color: #D7B256 !important; }
@@ -31,6 +30,7 @@
     .footer { background: #F8F8F8 !important; padding: 3rem 0 2rem; text-align: center; font-size: 0.9rem; color: #666 !important; }
     .footer a { color: #009B9E !important; }
     .hidden { display: none; }
+    .loading { opacity: 0.7; cursor: not-allowed; }
     .member-area { margin-top: 1rem; }
   </style>
 </head>
@@ -113,8 +113,13 @@
       <div class="container">
         <h1>Connect Wallet</h1>
         <p>Connect your wallet to access your credits and governance.</p>
-        <button class="cta-btn" onclick="connectWallet()">Connect with Thirdweb</button>
+        <button class="cta-btn" id="connect-btn" onclick="connectWallet()">Connect with Thirdweb</button>
         <p id="wallet-status" style="margin-top: 1rem;"></p>
+        <div id="member-area" class="member-area" style="display: none;">
+          <h2>Your Account</h2>
+          <p id="credits-display"></p>
+          <a href="#" onclick="show('affiliates')" class="cta-btn">Affiliate Dashboard</a>
+        </div>
       </div>
     </section>
 
@@ -133,6 +138,7 @@
       <div class="container">
         <h1>Thank You</h1>
         <p id="thank-you-message"></p>
+        <p id="tx-id"></p>
         <p>Treasury Split: 30% → Affiliate | 20% → Marketing | 50% → Dev Multisig</p>
         <a href="#" onclick="show('home')" class="cta-btn">Back to Home</a>
       </div>
@@ -166,6 +172,11 @@
         <p>Your Wallet: <input type="text" id="affiliate-wallet" placeholder="0x..." style="padding: 0.5rem; width: 300px;"></p>
         <button class="cta-btn" onclick="generateAffiliateLink()">Generate My Link</button>
         <p id="affiliate-link" style="margin-top: 1rem; word-break: break-all;"></p>
+        <div id="affiliate-dashboard" style="margin-top: 2rem;">
+          <h2>Earnings Dashboard</h2>
+          <p>Total Referred: $0</p>
+          <p>Payouts: 0</p>
+        </div>
       </div>
     </section>
 
@@ -217,37 +228,38 @@
 
     // Connect Wallet
     async function connectWallet() {
+      const btn = document.getElementById('connect-btn');
+      btn.disabled = true;
+      btn.innerText = 'Connecting...';
       try {
         const { connect } = window.thirdweb;
         const wallet = await connect();
         document.getElementById('wallet-status').innerText = `Connected: ${wallet.address.slice(0, 6)}...${wallet.address.slice(-4)}`;
+        document.getElementById('member-area').style.display = 'block';
         if (currentPack.amount >= 500) {
           show('kyc');
         } else {
           pay();
         }
       } catch (e) {
-        document.getElementById('wallet-status').innerText = "Connection failed.";
+        document.getElementById('wallet-status').innerText = "Connection failed. Try again.";
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Connect with Thirdweb';
       }
     }
 
-    // KYC
+    // KYC (Sumsub Stub)
     function startKYC() {
-      SumSub.init({
-        accessToken: 'your-sumsub-token',
-        flowName: 'kyc-flow',
-        onFinish: (result) => {
-          if (result.status === 'completed') {
-            pay();
-          } else {
-            alert('KYC failed. Try again.');
-          }
-        }
-      });
+      document.getElementById('kyc-status').innerText = 'KYC completed (stub).';
+      setTimeout(() => pay(), 2000);
     }
 
     // Pay
     async function pay() {
+      const btn = document.getElementById('connect-btn');
+      btn.disabled = true;
+      btn.innerText = 'Paying...';
       try {
         const { pay } = window.thirdweb;
         const ref = new URLSearchParams(window.location.search).get('ref') || 'no-affiliate';
@@ -264,9 +276,13 @@
         });
         const msg = `You contributed $${currentPack.amount} and received ${currentPack.credits} Credits (${currentPack.tier} tier). Tx ID: ${tx.hash}`;
         document.getElementById('thank-you-message').innerText = msg;
+        document.getElementById('tx-id').innerText = `Tx ID: ${tx.hash}`;
         show('thankyou');
       } catch (e) {
         alert('Payment failed. Try again.');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Connect with Thirdweb';
       }
     }
 
